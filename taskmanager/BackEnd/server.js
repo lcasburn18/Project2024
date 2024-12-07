@@ -107,6 +107,18 @@ app.delete('/api/task/:id', async (req, res) => {
   }
 });
 
+app.post('/api/tasks', async (req, res) => {
+  const { title, completed } = req.body;
+
+  try {
+    const newTask = await TaskModel.create({ title, completed });
+    res.status(201).json(newTask);
+  } catch (error) {
+    console.error("Error creating task:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 // Start server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
