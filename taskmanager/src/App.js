@@ -1,15 +1,18 @@
 import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import TaskPage from "./pages/TaskPage";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <div>
-          <h1>Hello World!</h1>
-        </div>
-      </header>
-    </div>
+    <Router>
+      <div>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/task/:id" element={<TaskPage />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
-
-export default App;
