@@ -16,7 +16,7 @@ const TaskForm = ({ onTaskAdded }) => {
     setError(""); // Clear error if valid
     try {
       const response = await axios.post("/api/tasks", { title, completed: false });
-      onTaskAdded(response.data); // Notify parent
+      onTaskAdded(response.data); // Notify parent with task data
       setTitle(""); // Reset input
     } catch (error) {
       console.error("Error creating task:", error);
