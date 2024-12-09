@@ -3,16 +3,24 @@ import axios from "../api/axios";
 
 const TaskForm = ({ onTaskAdded }) => {
   const [title, setTitle] = useState("");
+  const [error, setError] = useState(""); // State for error messages
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent page refresh
+    e.preventDefault();
 
+    if (!title.trim()) {
+      setError("Task title cannot be empty!");
+      return;
+    }
+
+    setError(""); // Clear error if valid
     try {
       const response = await axios.post("/api/tasks", { title, completed: false });
-      onTaskAdded(response.data); // Notify parent about the new task
-      setTitle(""); // Clear the input field
+      onTaskAdded(response.data); // Notify parent
+      setTitle(""); // Reset input
     } catch (error) {
       console.error("Error creating task:", error);
+      setError("Failed to add task. Please try again.");
     }
   };
 
@@ -26,6 +34,7 @@ const TaskForm = ({ onTaskAdded }) => {
         required
       />
       <button type="submit">Add Task</button>
+      {error && <p style={{ color: "red" }}>{error}</p>} {/* Show error message */}
     </form>
   );
 };
