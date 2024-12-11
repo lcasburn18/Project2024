@@ -1,18 +1,18 @@
-import './App.css';
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage";
-import TaskPage from "./pages/TaskPage";
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import NavigationBar from './components/NavigationBar';
+import Read from './components/Read';
+import Create from './components/Create';
+import Edit from './components/Edit';
 
 function App() {
   return (
     <Router>
-      <div>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/task/:id" element={<TaskPage />} />
-        </Routes>
-      </div>
+      <NavigationBar />
+      <Routes>
+        <Route path="/" element={<Read />} />
+        <Route path="/create" element={<Create />} />
+        <Route path="/edit/:id" element={<Edit />} />
+      </Routes>
     </Router>
   );
 }
