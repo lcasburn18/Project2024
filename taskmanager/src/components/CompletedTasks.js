@@ -8,21 +8,12 @@ const CompletedTasks = () => {
     // Fetch all tasks and filter the completed ones
     axios.get('http://localhost:4000/api/tasks')
       .then((res) => {
+        console.log("Fetched tasks:", res.data.tasks); // Inspect the tasks response
         const completedTasks = res.data.tasks.filter(task => task.completed);
         setTasks(completedTasks);
       })
       .catch((err) => console.error(err));
   }, []);
-
-  const handleDelete = (taskId) => {
-    // Delete the task by ID
-    axios.delete(`http://localhost:4000/api/task/${taskId}`)
-      .then(() => {
-        // Remove the deleted task from the state
-        setTasks(tasks.filter(task => task._id !== taskId));
-      })
-      .catch((err) => console.error(err));
-  };
 
   return (
     <div>
@@ -31,15 +22,32 @@ const CompletedTasks = () => {
         <p>No completed tasks yet!</p>
       ) : (
         tasks.map(task => (
-          <div key={task._id} style={{ marginBottom: '10px', border: '1px solid #ccc', padding: '10px' }}>
-            <p>{task.title}</p>
-            {task.completedAt && <p>Completed on: {new Date(task.completedAt).toLocaleString()}</p>}
+          <div key={task._id} className="task-item">
+            <h3>{task.title}</h3>
+            <p>{task.description}</p>
+            <p><strong>Status:</strong> Completed</p>
+            <p><strong>Due Date:</strong> {new Date(task.dueDate).toLocaleDateString()}</p>
+            
+            {task.completedAt && (
+              <p>
+                <strong>Completed on:</strong> {new Date(task.completedAt).toLocaleDateString()}
+              </p>
+            )}
+
             <button onClick={() => handleDelete(task._id)}>Delete</button>
           </div>
         ))
       )}
     </div>
   );
+
+  const handleDelete = (id) => {
+    axios.delete(`http://localhost:4000/api/task/${id}`)
+      .then(() => {
+        setTasks(tasks.filter(task => task._id !== id));
+      })
+      .catch((err) => console.error('Error deleting task:', err));
+  };
 };
 
 export default CompletedTasks;
