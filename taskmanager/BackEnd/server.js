@@ -24,7 +24,7 @@ app.use(bodyParser.json());
 const mongoose = require('mongoose');
 mongoose.connect('mongodb+srv://admin:admin@cluster0.q66of.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
 });
 
 // Define the schema for tasks in the database
@@ -41,54 +41,100 @@ const taskModel = mongoose.model('Task', taskSchema);
 
 // Route to fetch all tasks (both completed and pending)
 app.get('/api/tasks', async (req, res) => {
-  const tasks = await taskModel.find({});
-  res.status(200).json({ tasks });  // Respond with the tasks in JSON format
+  try {
+    const tasks = await taskModel.find({});
+    res.status(200).json({ tasks }); // Respond with the tasks in JSON format
+  } catch (err) {
+    console.error('Error fetching tasks:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 // Route to fetch only completed tasks
 app.get('/api/completed-tasks', async (req, res) => {
   try {
-    const tasks = await taskModel.find({ completed: true });  // Fetch tasks where "completed" is true
-    res.status(200).json({ tasks });  // Respond with the completed tasks
+    const tasks = await taskModel.find({ completed: true }); // Fetch tasks where "completed" is true
+    res.status(200).json({ tasks }); // Respond with the completed tasks
   } catch (err) {
-    res.status(500).json({ error: 'Error fetching completed tasks' });
+    console.error('Error fetching completed tasks:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
 // Route to get a specific task by ID
 app.get('/api/task/:id', async (req, res) => {
-  const task = await taskModel.findById(req.params.id);
-  res.json(task);  // Respond with the found task
+  try {
+    const task = await taskModel.findById(req.params.id);
+    if (!task) {
+      return res.status(404).json({ error: 'Task not found' });
+    }
+    res.json(task); // Respond with the found task
+  } catch (err) {
+    console.error('Error fetching task:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 // Route to delete a specific task by ID
 app.delete('/api/task/:id', async (req, res) => {
-  const task = await taskModel.findByIdAndDelete(req.params.id);
-  res.send(task);  // Respond with the deleted task
+  try {
+    const task = await taskModel.findByIdAndDelete(req.params.id);
+    if (!task) {
+      return res.status(404).json({ error: 'Task not found' });
+    }
+    res.json({ message: 'Task deleted successfully', task }); // Respond with the deleted task
+  } catch (err) {
+    console.error('Error deleting task:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
-// Route to update a task (e.g., mark as completed or incomplete)
+// Route to update a task (e.g., edit details or mark as completed/incomplete)
 app.put('/api/task/:id', async (req, res) => {
-  const { completed } = req.body;
-  const completedAt = completed ? new Date() : null;  // If completed, set the current date as the completed date
+  const { title, description, dueDate, completed } = req.body;
+  const completedAt = completed ? new Date() : null; // Set completion date if task is completed
 
-  // Update the task with the new "completed" status and the completion date
-  const task = await taskModel.findByIdAndUpdate(
-    req.params.id,
-    { completed, completedAt },
-    { new: true }
-  );
-  res.send(task);  // Send back the updated task
+  try {
+    // Update the task by its ID
+    await taskModel.findByIdAndUpdate(
+      req.params.id,
+      { title, description, dueDate, completed, completedAt },
+      { runValidators: true } // Validate the fields before updating
+    );
+
+    // Fetch the updated task to ensure the response contains the latest data
+    const updatedTask = await taskModel.findById(req.params.id);
+
+    if (!updatedTask) {
+      return res.status(404).json({ error: 'Task not found' });
+    }
+
+    res.json(updatedTask); // Respond with the updated task
+  } catch (err) {
+    console.error('Error updating task:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
+
 
 // Route to mark a task as incomplete (reset the completed status and date)
 app.put('/api/task/:id/incomplete', async (req, res) => {
-  const task = await taskModel.findByIdAndUpdate(
-    req.params.id,  // The task ID to update
-    { completed: false, completedAt: null },  // Reset the task to incomplete
-    { new: true }
-  );
-  res.send(task);  // Respond with the updated task
+  try {
+    const task = await taskModel.findByIdAndUpdate(
+      req.params.id, // The task ID to update
+      { completed: false, completedAt: null }, // Reset the task to incomplete
+      { new: true }
+    );
+
+    if (!task) {
+      return res.status(404).json({ error: 'Task not found' });
+    }
+
+    res.json(task); // Respond with the updated task
+  } catch (err) {
+    console.error('Error marking task as incomplete:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 // Route to add a new task
@@ -100,20 +146,19 @@ app.post('/api/tasks', async (req, res) => {
     return res.status(400).json({ error: 'Title, description, and dueDate are required.' });
   }
 
-  // Create a new task using the provided data
   const newTask = new taskModel({
     title,
     description,
     dueDate,
-    completed: completed || false,  // Default "completed" to false if not provided
+    completed: completed || false, // Default "completed" to false if not provided
   });
 
   try {
-    await newTask.save();  // Save the new task to the database
-    res.status(201).json({ message: "Task Added!", Task: newTask });  // Respond with success message
+    await newTask.save(); // Save the new task to the database
+    res.status(201).json({ message: "Task added successfully", task: newTask }); // Respond with success message
   } catch (err) {
-    console.error(err); 
-    res.status(500).json({ error: 'Failed to create task.' });
+    console.error('Error creating task:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
