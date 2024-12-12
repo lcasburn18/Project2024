@@ -39,3 +39,57 @@ li {
 li button {
   margin-left: 5px;
 }
+
+.completed-tasks-container {
+  padding: 20px;
+  text-align: center;
+}
+
+.task-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.task-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.task-card:hover {
+  transform: scale(1.05);
+}
+
+.task-card h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.task-card p {
+  font-size: 1rem;
+  color: #555;
+}
+
+.task-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.task-actions button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.task-actions button:hover {
+  background-color: #0056b3;
+}
