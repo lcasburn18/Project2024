@@ -32,7 +32,13 @@ const TaskList = ({ tasks, handleCompleteTask, setSelectedTaskId, handleDeleteTa
                   Mark as Completed
                 </button>
               )}
-              
+              {/* Add Edit button */}
+              <button
+                className="btn-edit"
+                onClick={() => window.location.href = `/edit/${task._id}`} // Navigate to the Edit page
+              >
+                Edit
+              </button>
               {/* "Delete" button for deleting the task */}
               <button
                 className="btn-delete"
