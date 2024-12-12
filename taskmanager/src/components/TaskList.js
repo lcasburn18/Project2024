@@ -1,5 +1,5 @@
 import React from 'react';
-import './styles/TaskList.css'; // Import the CSS file for TaskList styling
+import '../styles/TaskList.css'; // Import the CSS file for TaskList styling
 
 const TaskList = ({ tasks, handleCompleteTask, setSelectedTaskId }) => {
   return (
