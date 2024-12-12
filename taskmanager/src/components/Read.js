@@ -5,12 +5,34 @@ import axios from 'axios';
 
 const Read = () => {
   const [tasks, setTasks] = useState([]);
+  const [completionDate, setCompletionDate] = useState('');  // State to hold the selected completion date
+  const [selectedTaskId, setSelectedTaskId] = useState(null);  // Store the taskId of the task being marked as completed
   const navigate = useNavigate();  // Hook to navigate between pages
 
   const reloadTasks = () => {
     axios.get('http://localhost:4000/api/tasks')
       .then((res) => setTasks(res.data.tasks))
       .catch((err) => console.error(err));
+  };
+
+  const handleCompleteTask = async (taskId) => {
+    // If a completion date is selected, proceed with updating the task
+    if (completionDate) {
+      try {
+        // Send a PUT request to mark the task as completed and update the completedAt field
+        const updatedTask = await axios.put(`http://localhost:4000/api/task/${taskId}`, {
+          completed: true,
+          completedAt: completionDate,  // Send the selected date
+        });
+
+        // Reload tasks after update
+        reloadTasks();
+        setCompletionDate('');  // Clear the completion date input
+        setSelectedTaskId(null);  // Clear the selected taskId
+      } catch (error) {
+        console.error("Error marking task as completed:", error);
+      }
+    }
   };
 
   useEffect(() => {
@@ -23,8 +45,25 @@ const Read = () => {
   return (
     <div>
       <h2>Task List</h2>
-      {/* Render pending tasks */}
-      <TaskList tasks={pendingTasks} reloadTasks={reloadTasks} />
+      {/* Render only pending tasks */}
+      <TaskList tasks={pendingTasks} reloadTasks={reloadTasks} 
+                handleCompleteTask={handleCompleteTask} 
+                setSelectedTaskId={setSelectedTaskId} />
+
+      {/* If a task is selected for completion, show the date picker */}
+      {selectedTaskId && (
+        <div>
+          <label>Select completion date:</label>
+          <input
+            type="date"
+            value={completionDate}
+            onChange={(e) => setCompletionDate(e.target.value)}
+          />
+          <button onClick={() => handleCompleteTask(selectedTaskId)}>
+            Mark as Completed
+          </button>
+        </div>
+      )}
 
       {/* Button to navigate to completed tasks page */}
       <div>

@@ -27,38 +27,44 @@ const taskSchema = new mongoose.Schema({
   description: { type: String, required: true },
   dueDate: { type: Date, required: true },
   completed: { type: Boolean, default: false },
-  completedAt: { type: Date },
+  completedAt: { type: Date },  // Field for completion date
 });
 
 const taskModel = mongoose.model('Task', taskSchema);
 
+// Fetch all tasks (including completed)
 app.get('/api/tasks', async (req, res) => {
   const tasks = await taskModel.find({});
   res.status(200).json({ tasks });
 });
 
+// Get a specific task by ID
 app.get('/api/task/:id', async (req, res) => {
   const task = await taskModel.findById(req.params.id);
   res.json(task);
 });
 
+// Delete a specific task by ID
 app.delete('/api/task/:id', async (req, res) => {
   const task = await taskModel.findByIdAndDelete(req.params.id);
   res.send(task);
 });
 
+// Update a task (mark as completed or not)
 app.put('/api/task/:id', async (req, res) => {
   const { completed } = req.body;  // Get the "completed" status from the request body
   const completedAt = completed ? new Date() : null;  // Set completedAt if task is marked as completed
   
+  // Update the task with the new "completed" status and "completedAt" date
   const task = await taskModel.findByIdAndUpdate(
     req.params.id,
-    { ...req.body, completedAt }, // Spread the incoming request body and include completedAt
+    { completed, completedAt },  // Only update the status and the completedAt field
     { new: true }  // Return the updated task
   );
   res.send(task);  // Send back the updated task
 });
 
+// Add a new task
 app.post('/api/tasks', async (req, res) => {
   const { title, description, dueDate, completed } = req.body;
 
@@ -70,7 +76,7 @@ app.post('/api/tasks', async (req, res) => {
     title,
     description,
     dueDate,
-    completed
+    completed: completed || false,  // Set completed status, default to false if not provided
   });
 
   try {
@@ -82,6 +88,7 @@ app.post('/api/tasks', async (req, res) => {
   }
 });
 
+// Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
