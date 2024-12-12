@@ -1,0 +1,93 @@
+/* styles/Create.css */
+
+/* Create page container styling */
+.create-container {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
+  text-align: center;
+}
+
+/* Title of the page */
+.create-container h3 {
+  font-size: 24px;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+/* Form container */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Input fields styling */
+input,
+textarea,
+button,
+.react-datepicker__input-container input {
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  outline: none;
+}
+
+/* Input focus effect */
+input:focus,
+textarea:focus,
+.react-datepicker__input-container input:focus {
+  border-color: #5c6bc0;
+  box-shadow: 0 0 8px rgba(92, 107, 192, 0.5);
+}
+
+/* Textarea styling */
+textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+/* Label styling */
+label {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Submit button styling */
+button,
+input[type="submit"] {
+  background-color: #5c6bc0;
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+button:hover,
+input[type="submit"]:hover {
+  background-color: #3f4a89;
+}
+
+button,
+input[type="submit"] {
+  padding: 12px;
+  font-size: 18px;
+  border-radius: 5px;
+  margin-top: 15px;
+  width: 100%;
+}
+
+.react-datepicker-wrapper {
+  display: block;
+}
+
+.react-datepicker__input-container input {
+  padding: 12px;
+}

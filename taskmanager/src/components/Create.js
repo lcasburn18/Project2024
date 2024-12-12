@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; // Import CSS for the date picker
 import { useNavigate } from 'react-router-dom';
+import '../styles/create.css';  // Import your new CSS file
 
 const Create = () => {
     const [title, setTitle] = useState('');
@@ -11,23 +12,23 @@ const Create = () => {
     const navigate = useNavigate();
     
     const handleSubmit = async (e) => {
-      e.preventDefault();
-      const task = {
-        title,
-        description,
-        dueDate: dueDate.toISOString(), // Serialize date correctly
-      };
+        e.preventDefault();
+        const task = {
+            title,
+            description,
+            dueDate: dueDate.toISOString(), // Serialize date correctly
+        };
     
-      try {
-        await axios.post('http://localhost:4000/api/tasks', task);
-        navigate('/read');
-      } catch (err) {
-        console.error(err);
-      }
-    };    
+        try {
+            await axios.post('http://localhost:4000/api/tasks', task);
+            navigate('/read');
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     return (
-        <div>
+        <div className="create-container">
             <h3>Create a New Task</h3>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
