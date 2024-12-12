@@ -1,51 +1,59 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../App.css';  // Use the relative path from App.js to App.css
+import '../styles/completedTasks.css'; // Import your CSS for styling
 
 const CompletedTasks = () => {
   const [completedTasks, setCompletedTasks] = useState([]);
 
+  const reloadTasks = () => {
+    axios.get('http://localhost:4000/api/tasks')
+      .then((res) => {
+        const completed = res.data.tasks.filter(task => task.completed);
+        setCompletedTasks(completed);
+      })
+      .catch((err) => console.error(err));
+  };
+
+  const handleDeleteTask = async (taskId) => {
+    try {
+      // Send a DELETE request to remove the task
+      await axios.delete(`http://localhost:4000/api/task/${taskId}`);
+      // Reload tasks after deletion
+      reloadTasks();
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
+  };
+
   useEffect(() => {
-    // Fetch the completed tasks from the server
-    axios.get('http://localhost:4000/api/completed-tasks')
-      .then((res) => {
-        setCompletedTasks(res.data.tasks);
-      })
-      .catch((err) => console.error('Error fetching completed tasks:', err));
+    reloadTasks();
   }, []);
-
-  const handleMarkIncomplete = (taskId) => {
-    axios.put(`http://localhost:4000/api/task/${taskId}`, { completed: false })
-      .then((res) => {
-        setCompletedTasks(completedTasks.filter(task => task._id !== taskId));
-      })
-      .catch((err) => console.error('Error marking task as incomplete:', err));
-  };
-
-  const handleDelete = (taskId) => {
-    axios.delete(`http://localhost:4000/api/task/${taskId}`)
-      .then(() => {
-        setCompletedTasks(completedTasks.filter(task => task._id !== taskId));
-      })
-      .catch((err) => console.error('Error deleting task:', err));
-  };
 
   return (
     <div className="completed-tasks-container">
-      <h2>Completed Tasks</h2>
-      <div className="task-cards">
-        {completedTasks.map((task) => (
-          <div key={task._id} className="task-card">
-            <h3>{task.title}</h3>
-            <p>{task.description}</p>
-            <p><strong>Completed On:</strong> {new Date(task.completedAt).toLocaleDateString()}</p>
-            <div className="task-actions">
-              <button onClick={() => handleMarkIncomplete(task._id)}>Mark as Incomplete</button>
-              <button onClick={() => handleDelete(task._id)}>Delete</button>
-            </div>
-          </div>
-        ))}
-      </div>
+      <h2 className="page-title">Completed Tasks</h2>
+      {completedTasks.length === 0 ? (
+        <p className="no-tasks-message">No completed tasks available.</p>
+      ) : (
+        <ul className="completed-tasks-list">
+          {completedTasks.map(task => (
+            <li key={task._id} className="completed-task-item">
+              <div className="task-info">
+                <span className="task-title">{task.title}</span>
+                <span className="task-completed-date">
+                  Completed on: {new Date(task.completedAt).toLocaleDateString()}
+                </span>
+              </div>
+              <button
+                className="btn-delete"
+                onClick={() => handleDeleteTask(task._id)}
+              >
+                Delete Task
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
