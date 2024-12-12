@@ -1,0 +1,121 @@
+/* Styling for the Read page */
+.read-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
+  }
+  
+  .page-title {
+    text-align: center;
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  /* Style the button to mark task as completed */
+  .complete-task-date {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+  }
+  
+  .complete-task-date input[type="date"] {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+  }
+  
+  .btn-complete-task {
+    padding: 6px 12px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-complete-task:hover {
+    background-color: #45a049;
+  }
+  
+  /* Button to navigate to completed tasks page */
+.btn-go-completed {
+    padding: 6px 12px;
+    background-color: #2196f3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+    width: auto;
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .btn-go-completed:hover {
+    background-color: #1976d2;
+  }
+  
+  /* Add a container for the button to center it */
+  .btn-container {
+    display: flex;
+    justify-content: center;  /* Horizontally centers the button */
+    align-items: center;  /* Vertically centers the button */
+    margin-top: 20px;
+  }
+  
+  
+  .task-list-title {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  
+  .task-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .task-item {
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: #fff;
+  }
+  
+  .task-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .task-title {
+    font-weight: bold;
+  }
+  
+  .task-due-date {
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  .btn-complete {
+    padding: 6px 12px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .btn-complete:hover {
+    background-color: #45a049;
+  }
+  

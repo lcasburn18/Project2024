@@ -2,6 +2,7 @@ import TaskList from './TaskList';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';  // Importing useNavigate hook
 import axios from 'axios';
+import '../styles/read.css'; // Import your CSS for styling
 
 const Read = () => {
   const [tasks, setTasks] = useState([]);
@@ -43,32 +44,35 @@ const Read = () => {
   const pendingTasks = tasks.filter(task => !task.completed);
 
   return (
-    <div>
-      <h2>Task List</h2>
+    <div className="read-container">
+      <h2 className="page-title">Task List</h2>
       {/* Render only pending tasks */}
-      <TaskList tasks={pendingTasks} reloadTasks={reloadTasks} 
-                handleCompleteTask={handleCompleteTask} 
-                setSelectedTaskId={setSelectedTaskId} />
+      <TaskList tasks={pendingTasks} reloadTasks={reloadTasks}
+        handleCompleteTask={handleCompleteTask}
+        setSelectedTaskId={setSelectedTaskId} />
 
       {/* If a task is selected for completion, show the date picker */}
       {selectedTaskId && (
-        <div>
+        <div className="complete-task-date">
           <label>Select completion date:</label>
           <input
             type="date"
             value={completionDate}
             onChange={(e) => setCompletionDate(e.target.value)}
           />
-          <button onClick={() => handleCompleteTask(selectedTaskId)}>
+          <button className="btn-complete-task" onClick={() => handleCompleteTask(selectedTaskId)}>
             Mark as Completed
           </button>
         </div>
       )}
 
       {/* Button to navigate to completed tasks page */}
-      <div>
-        <button onClick={() => navigate('/completed-tasks')}>Go to Completed Tasks</button>
+      <div className="btn-container">
+        <button className="btn-go-completed" onClick={() => navigate('/completed-tasks')}>
+          Go to Completed Tasks
+        </button>
       </div>
+
     </div>
   );
 };
