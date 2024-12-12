@@ -15,13 +15,16 @@ const CompletedTasks = () => {
   };
 
   const handleDeleteTask = async (taskId) => {
-    try {
-      // Send a DELETE request to remove the task
-      await axios.delete(`http://localhost:4000/api/task/${taskId}`);
-      // Reload tasks after deletion
-      reloadTasks();
-    } catch (error) {
-      console.error("Error deleting task:", error);
+    // Confirm the deletion action with the user
+    if (window.confirm('Are you sure you want to delete this task?')) {
+      try {
+        // Send a DELETE request to remove the task
+        await axios.delete(`http://localhost:4000/api/task/${taskId}`);
+        // Reload tasks after deletion
+        reloadTasks();
+      } catch (error) {
+        console.error("Error deleting task:", error);
+      }
     }
   };
 
@@ -46,7 +49,7 @@ const CompletedTasks = () => {
               </div>
               <button
                 className="btn-delete"
-                onClick={() => handleDeleteTask(task._id)}
+                onClick={() => handleDeleteTask(task._id)}  // Delete button with confirmation
               >
                 Delete Task
               </button>
