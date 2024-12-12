@@ -3,6 +3,7 @@ import NavigationBar from './components/NavigationBar';
 import Read from './components/Read';
 import Create from './components/Create';
 import Edit from './components/Edit';
+import HomePage from './components/HomePage';
 import CompletedTasks from './components/CompletedTasks';
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
     <Router>
       <NavigationBar />
       <Routes>
+        <Route path="/HomePage" element={<HomePage />} />
         <Route path="/read" element={<Read />} />
         <Route path="/create" element={<Create />} />
         <Route path="/edit/:id" element={<Edit />} />
