@@ -1,14 +1,15 @@
 import TaskList from './TaskList';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';  // Importing useNavigate hook
+import { useNavigate } from 'react-router-dom'; // Importing useNavigate hook
 import axios from 'axios';
 import '../styles/read.css'; // Import your CSS for styling
 
 const Read = () => {
   const [tasks, setTasks] = useState([]);
-  const [completionDate, setCompletionDate] = useState('');  // State to hold the selected completion date
-  const [selectedTaskId, setSelectedTaskId] = useState(null);  // Store the taskId of the task being marked as completed
-  const navigate = useNavigate();  // Hook to navigate between pages
+  const [completionDate, setCompletionDate] = useState(''); // State to hold the selected completion date
+  const [selectedTaskId, setSelectedTaskId] = useState(null); // Store the taskId of the task being marked as completed
+  const [searchQuery, setSearchQuery] = useState(''); // State for search query
+  const navigate = useNavigate(); // Hook to navigate between pages
 
   const reloadTasks = () => {
     axios.get('http://localhost:4000/api/tasks')
@@ -21,29 +22,18 @@ const Read = () => {
     if (completionDate) {
       try {
         // Send a PUT request to mark the task as completed and update the completedAt field
-        const updatedTask = await axios.put(`http://localhost:4000/api/task/${taskId}`, {
+        await axios.put(`http://localhost:4000/api/task/${taskId}`, {
           completed: true,
-          completedAt: completionDate,  // Send the selected date
+          completedAt: completionDate, // Send the selected date
         });
 
         // Reload tasks after update
         reloadTasks();
-        setCompletionDate('');  // Clear the completion date input
-        setSelectedTaskId(null);  // Clear the selected taskId
+        setCompletionDate(''); // Clear the completion date input
+        setSelectedTaskId(null); // Clear the selected taskId
       } catch (error) {
         console.error("Error marking task as completed:", error);
       }
-    }
-  };
-
-  const handleDeleteTask = async (taskId) => {
-    try {
-      // Send a DELETE request to remove the task
-      await axios.delete(`http://localhost:4000/api/task/${taskId}`);
-      // Reload tasks after deletion
-      reloadTasks();
-    } catch (error) {
-      console.error("Error deleting task:", error);
     }
   };
 
@@ -54,17 +44,30 @@ const Read = () => {
   // Filter out pending tasks only after tasks have been fetched
   const pendingTasks = tasks.filter(task => !task.completed);
 
+  // Filter tasks based on the search query
+  const filteredTasks = pendingTasks.filter((task) =>
+    task.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="read-container">
       <h2 className="page-title">Task List</h2>
-      {/* Render only pending tasks */}
-      <TaskList 
-        tasks={pendingTasks} 
-        reloadTasks={reloadTasks}
+      
+      {/* Search input */}
+      <div className="search-container">
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Search tasks..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+
+      {/* Render filtered tasks */}
+      <TaskList tasks={filteredTasks} reloadTasks={reloadTasks}
         handleCompleteTask={handleCompleteTask}
-        handleDeleteTask={handleDeleteTask} // Pass the delete function
-        setSelectedTaskId={setSelectedTaskId} 
-      />
+        setSelectedTaskId={setSelectedTaskId} />
 
       {/* If a task is selected for completion, show the date picker */}
       {selectedTaskId && (
@@ -87,7 +90,6 @@ const Read = () => {
           Go to Completed Tasks
         </button>
       </div>
-
     </div>
   );
 };
