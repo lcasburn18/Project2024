@@ -29,7 +29,7 @@ const taskSchema = new mongoose.Schema({
   completed: { type: Boolean, default: false },
 });
 
-const taskModel = new mongoose.model('Task', taskSchema);
+const taskModel = mongoose.model('Task', taskSchema);
 
 app.get('/api/tasks', async (req, res) => {
   const tasks = await taskModel.find({});
@@ -52,14 +52,30 @@ app.put('/api/task/:id', async (req, res) => {
 });
 
 app.post('/api/tasks', async (req, res) => {
-  const { title, completed } = req.body;
-  const newTask = new taskModel({ title, completed });
-  await newTask.save();
-  res.status(201).json({ message: "Task Added!", Task: newTask });
+  const { title, description, dueDate, completed } = req.body;
+
+  if (!title || !description || !dueDate) {
+    return res.status(400).json({ error: 'Title, description, and dueDate are required.' });
+  }
+
+  const newTask = new taskModel({
+    title,
+    description,
+    dueDate,
+    completed
+  });
+
+  try {
+    await newTask.save();
+    res.status(201).json({ message: "Task Added!", Task: newTask });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to create task.' });
+  }
 });
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
 
-module.exports = Task;
+module.exports = taskModel;
