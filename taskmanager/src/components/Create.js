@@ -1,13 +1,15 @@
 import axios from "axios";
-import { useState } from "react";
+import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; // Import CSS for the date picker
+import { useNavigate } from 'react-router-dom';
 
 const Create = () => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [dueDate, setDueDate] = useState(new Date()); // Default to today's date
-
+    const navigate = useNavigate();
+    
     const handleSubmit = async (e) => {
       e.preventDefault();
       const task = {
