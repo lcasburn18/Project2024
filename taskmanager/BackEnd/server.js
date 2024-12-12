@@ -26,6 +26,7 @@ const taskSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   dueDate: { type: Date, required: true },
+  completed: { type: Boolean, default: false },
 });
 
 const taskModel = new mongoose.model('Task', taskSchema);
@@ -60,3 +61,5 @@ app.post('/api/tasks', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
+
+module.exports = Task;
