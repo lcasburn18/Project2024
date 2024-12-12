@@ -18,7 +18,7 @@ const HomePage = () => {
             </div>
 
             <div className="home-info">
-                <h2>Features</h2>
+                <h2>Features:</h2>
                 <ul>
                     <li>Create tasks with due dates</li>
                     <li>Track task completion</li>
