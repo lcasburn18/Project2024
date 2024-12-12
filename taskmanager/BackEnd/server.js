@@ -59,7 +59,6 @@ app.put('/api/task/:id', async (req, res) => {
   res.send(task);  // Send back the updated task
 });
 
-
 app.post('/api/tasks', async (req, res) => {
   const { title, description, dueDate, completed } = req.body;
 
