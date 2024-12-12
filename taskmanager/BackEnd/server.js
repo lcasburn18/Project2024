@@ -86,6 +86,15 @@ app.put('/api/task/:id/incomplete', async (req, res) => {
   res.send(task);
 });
 
+const handleDeleteTask = async (taskId) => {
+  try {
+    await axios.delete(`http://localhost:4000/api/task/${taskId}`);
+    reloadTasks(); // Refresh the task list after deletion
+  } catch (error) {
+    console.error("Error deleting task:", error);
+  }
+};
+
 // Add a new task
 app.post('/api/tasks', async (req, res) => {
   const { title, description, dueDate, completed } = req.body;

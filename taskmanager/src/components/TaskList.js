@@ -1,7 +1,7 @@
 import React from 'react';
-import '../styles/TaskList.css'; // Import the CSS file for TaskList styling
+import '../styles/TaskList.css';
 
-const TaskList = ({ tasks, handleCompleteTask, setSelectedTaskId }) => {
+const TaskList = ({ tasks, handleCompleteTask, setSelectedTaskId, handleDeleteTask }) => {
   return (
     <div className="task-list-container">
       <h3 className="task-list-title">Pending Tasks</h3>
@@ -12,15 +12,22 @@ const TaskList = ({ tasks, handleCompleteTask, setSelectedTaskId }) => {
               <span className="task-title">{task.title}</span>
               <span className="task-due-date">Due: {new Date(task.dueDate).toLocaleDateString()}</span>
             </div>
-            {/* Only show the 'Complete' button for tasks that are not completed */}
-            {!task.completed && (
+            <div className="task-actions">
+              {!task.completed && (
+                <button
+                  className="btn-complete"
+                  onClick={() => setSelectedTaskId(task._id)}
+                >
+                  Mark as Completed
+                </button>
+              )}
               <button
-                className="btn-complete"
-                onClick={() => setSelectedTaskId(task._id)}
+                className="btn-delete"
+                onClick={() => handleDeleteTask(task._id)}
               >
-                Mark as Completed
+                Delete
               </button>
-            )}
+            </div>
           </li>
         ))}
       </ul>

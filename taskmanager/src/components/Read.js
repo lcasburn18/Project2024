@@ -36,6 +36,17 @@ const Read = () => {
     }
   };
 
+  const handleDeleteTask = async (taskId) => {
+    try {
+      // Send a DELETE request to remove the task
+      await axios.delete(`http://localhost:4000/api/task/${taskId}`);
+      // Reload tasks after deletion
+      reloadTasks();
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
+  };
+
   useEffect(() => {
     reloadTasks();
   }, []);
@@ -47,9 +58,13 @@ const Read = () => {
     <div className="read-container">
       <h2 className="page-title">Task List</h2>
       {/* Render only pending tasks */}
-      <TaskList tasks={pendingTasks} reloadTasks={reloadTasks}
+      <TaskList 
+        tasks={pendingTasks} 
+        reloadTasks={reloadTasks}
         handleCompleteTask={handleCompleteTask}
-        setSelectedTaskId={setSelectedTaskId} />
+        handleDeleteTask={handleDeleteTask} // Pass the delete function
+        setSelectedTaskId={setSelectedTaskId} 
+      />
 
       {/* If a task is selected for completion, show the date picker */}
       {selectedTaskId && (
