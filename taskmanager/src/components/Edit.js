@@ -38,19 +38,27 @@ const Edit = () => {
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Task Title:</label>
-          <input 
-            type="text" 
-            className="form-control" 
-            value={title} 
-            onChange={(e) => setTitle(e.target.value)} 
+          <input
+            type="text"
+            className="form-control"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
         </div>
         <div className="form-group">
           <label>Completed:</label>
-          <input 
-            type="checkbox" 
-            checked={completed} 
-            onChange={(e) => setCompleted(e.target.checked)} 
+          <input
+            type="checkbox"
+            checked={completed}
+            onChange={(e) => setCompleted(e.target.checked)}
+          />
+        </div>
+        <div className="form-group">
+          <DatePicker
+            selected={dueDate}
+            onChange={(date) => setDueDate(date)}
+            dateFormat="yyyy-MM-dd"
+            className="form-control"
           />
         </div>
         <button type="submit" className="btn btn-success">Update Task</button>

@@ -18,7 +18,11 @@ const Read = () => {
   return (
     <div>
       <h2>Task List</h2>
-      <TaskList tasks={tasks} reloadTasks={reloadTasks} />
+      {tasks.length > 0 ? (
+        <TaskList tasks={tasks} reloadTasks={reloadTasks} />
+      ) : (
+        <p>No tasks found. Add a new task to get started.</p>
+      )}
     </div>
   );
 };
