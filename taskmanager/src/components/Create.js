@@ -8,15 +8,21 @@ const Create = () => {
     const [description, setDescription] = useState('');
     const [dueDate, setDueDate] = useState(new Date()); // Default to today's date
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const task = { title, description, dueDate };
-        console.log(task);
-
-        axios.post('http://localhost:4000/api/tasks', task)
-            .then((res) => { console.log(res.data); })
-            .catch((err) => { console.error(err); });
-    };
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      const task = {
+        title,
+        description,
+        dueDate: dueDate.toISOString(), // Serialize date correctly
+      };
+    
+      try {
+        await axios.post('http://localhost:4000/api/tasks', task);
+        navigate('/read');
+      } catch (err) {
+        console.error(err);
+      }
+    };    
 
     return (
         <div>
