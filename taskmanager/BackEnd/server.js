@@ -23,8 +23,9 @@ mongoose.connect('mongodb+srv://admin:admin@cluster0.q66of.mongodb.net/?retryWri
 });
 
 const taskSchema = new mongoose.Schema({
-  title: String,
-  completed: Boolean,
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  dueDate: { type: Date, required: true },
 });
 
 const taskModel = new mongoose.model('Task', taskSchema);
