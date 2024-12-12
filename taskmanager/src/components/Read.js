@@ -1,64 +1,73 @@
-import TaskList from './TaskList';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';  // Importing useNavigate hook
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import TaskList from './TaskList'; // Import TaskList component
 import '../styles/read.css'; // Import your CSS for styling
 
 const Read = () => {
-  const [tasks, setTasks] = useState([]);
-  const [completionDate, setCompletionDate] = useState('');  // State to hold the selected completion date
-  const [selectedTaskId, setSelectedTaskId] = useState(null);  // Store the taskId of the task being marked as completed
-  const navigate = useNavigate();  // Hook to navigate between pages
+  const [tasks, setTasks] = useState([]); // State to hold all tasks
+  const [searchQuery, setSearchQuery] = useState(''); // State to hold the search query
+  const [completionDate, setCompletionDate] = useState('');
+  const [selectedTaskId, setSelectedTaskId] = useState(null);
+  const navigate = useNavigate();
 
+  // Function to reload tasks after any action like completing or deleting
   const reloadTasks = () => {
-    axios.get('http://localhost:4000/api/tasks')
+    axios
+      .get('http://localhost:4000/api/tasks')
       .then((res) => setTasks(res.data.tasks))
       .catch((err) => console.error(err));
   };
 
+  // Handle marking a task as completed
   const handleCompleteTask = async (taskId) => {
     if (completionDate) {
       try {
-        const updatedTask = await axios.put(`http://localhost:4000/api/task/${taskId}`, {
+        await axios.put(`http://localhost:4000/api/task/${taskId}`, {
           completed: true,
-          completedAt: completionDate,  // Send the selected date
+          completedAt: completionDate,
         });
-        reloadTasks();
+        reloadTasks(); // Reload tasks after completing
         setCompletionDate('');
         setSelectedTaskId(null);
       } catch (error) {
-        console.error("Error marking task as completed:", error);
+        console.error('Error marking task as completed:', error);
       }
     }
   };
 
-  const handleDeleteTask = async (taskId) => {
-    if (window.confirm('Are you sure you want to delete this task?')) {
-      try {
-        await axios.delete(`http://localhost:4000/api/task/${taskId}`);
-        reloadTasks(); // Reload tasks after deletion
-      } catch (error) {
-        console.error('Error deleting task:', error);
-      }
-    }
-  };
+  // Filter tasks based on the search query
+  const filteredTasks = tasks.filter((task) =>
+    task.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   useEffect(() => {
-    reloadTasks();
+    reloadTasks(); // Fetch tasks on page load
   }, []);
-
-  const pendingTasks = tasks.filter(task => !task.completed);
 
   return (
     <div className="read-container">
       <h2 className="page-title">Task List</h2>
-      {/* Render only pending tasks */}
-      <TaskList 
-        tasks={pendingTasks}
+
+      {/* Search Bar */}
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search tasks..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="search-input"
+        />
+      </div>
+
+      {/* TaskList component */}
+      <TaskList
+        tasks={filteredTasks.filter((task) => !task.completed)} // Only show pending tasks
         handleCompleteTask={handleCompleteTask}
         setSelectedTaskId={setSelectedTaskId}
-        handleDeleteTask={handleDeleteTask}  // Pass the delete handler
+        handleDeleteTask={() => {}}
       />
+
       {/* If a task is selected for completion, show the date picker */}
       {selectedTaskId && (
         <div className="complete-task-date">
@@ -68,11 +77,16 @@ const Read = () => {
             value={completionDate}
             onChange={(e) => setCompletionDate(e.target.value)}
           />
-          <button className="btn-complete-task" onClick={() => handleCompleteTask(selectedTaskId)}>
+          <button
+            className="btn-complete-task"
+            onClick={() => handleCompleteTask(selectedTaskId)}
+          >
             Mark as Completed
           </button>
         </div>
       )}
+
+      {/* Button to navigate to completed tasks page */}
       <div className="btn-container">
         <button className="btn-go-completed" onClick={() => navigate('/completed-tasks')}>
           Go to Completed Tasks
