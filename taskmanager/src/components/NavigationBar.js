@@ -13,6 +13,7 @@ const NavigationBar = () => {
             <Nav.Link href="/">Home</Nav.Link>
             <Nav.Link href="/create">Create Task</Nav.Link>
             <Nav.Link href="/read">Task List</Nav.Link>
+            <Nav.Link href="/completed-tasks">Completed Tasks</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
