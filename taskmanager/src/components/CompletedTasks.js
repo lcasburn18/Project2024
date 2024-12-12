@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import TaskItem from './TaskItem';  // Reuse TaskItem for completed tasks
 
 const CompletedTasks = () => {
   const [tasks, setTasks] = useState([]);
@@ -15,6 +14,16 @@ const CompletedTasks = () => {
       .catch((err) => console.error(err));
   }, []);
 
+  const handleDelete = (taskId) => {
+    // Delete the task by ID
+    axios.delete(`http://localhost:4000/api/task/${taskId}`)
+      .then(() => {
+        // Remove the deleted task from the state
+        setTasks(tasks.filter(task => task._id !== taskId));
+      })
+      .catch((err) => console.error(err));
+  };
+
   return (
     <div>
       <h2>Completed Tasks</h2>
@@ -22,11 +31,10 @@ const CompletedTasks = () => {
         <p>No completed tasks yet!</p>
       ) : (
         tasks.map(task => (
-          <div key={task._id} className="task-item">
-            <h3>{task.title}</h3>
-            <p>{task.description}</p>
-            {/* Add the date completed */}
-            <p><strong>Completed on:</strong> {new Date(task.completedAt).toLocaleDateString()}</p>
+          <div key={task._id} style={{ marginBottom: '10px', border: '1px solid #ccc', padding: '10px' }}>
+            <p>{task.title}</p>
+            {task.completedAt && <p>Completed on: {new Date(task.completedAt).toLocaleString()}</p>}
+            <button onClick={() => handleDelete(task._id)}>Delete</button>
           </div>
         ))
       )}
