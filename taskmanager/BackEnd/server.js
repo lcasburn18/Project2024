@@ -38,6 +38,17 @@ app.get('/api/tasks', async (req, res) => {
   res.status(200).json({ tasks });
 });
 
+// Fetch only completed tasks
+app.get('/api/completed-tasks', async (req, res) => {
+  try {
+    const tasks = await taskModel.find({ completed: true });  // Fetch tasks where "completed" is true
+    res.status(200).json({ tasks });
+  } catch (err) {
+    res.status(500).json({ error: 'Error fetching completed tasks' });
+  }
+});
+
+
 // Get a specific task by ID
 app.get('/api/task/:id', async (req, res) => {
   const task = await taskModel.findById(req.params.id);
@@ -62,6 +73,17 @@ app.put('/api/task/:id', async (req, res) => {
     { new: true }  // Return the updated task
   );
   res.send(task);  // Send back the updated task
+});
+
+
+// Mark a task as incomplete (reset completed status and completedAt)
+app.put('/api/task/:id/incomplete', async (req, res) => {
+  const task = await taskModel.findByIdAndUpdate(
+    req.params.id,
+    { completed: false, completedAt: null },  // Reset completed and completedAt
+    { new: true }
+  );
+  res.send(task);
 });
 
 // Add a new task
