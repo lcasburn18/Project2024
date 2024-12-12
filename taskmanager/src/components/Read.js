@@ -1,9 +1,11 @@
 import TaskList from './TaskList';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';  // Importing useNavigate hook
 import axios from 'axios';
 
 const Read = () => {
   const [tasks, setTasks] = useState([]);
+  const navigate = useNavigate();  // Hook to navigate between pages
 
   const reloadTasks = () => {
     axios.get('http://localhost:4000/api/tasks')
@@ -15,14 +17,19 @@ const Read = () => {
     reloadTasks();
   }, []);
 
+  // Filter out pending tasks only after tasks have been fetched
+  const pendingTasks = tasks.filter(task => !task.completed);
+
   return (
     <div>
       <h2>Task List</h2>
-      {tasks.length > 0 ? (
-        <TaskList tasks={tasks} reloadTasks={reloadTasks} />
-      ) : (
-        <p>No tasks found. Add a new task to get started.</p>
-      )}
+      {/* Render pending tasks */}
+      <TaskList tasks={pendingTasks} reloadTasks={reloadTasks} />
+
+      {/* Button to navigate to completed tasks page */}
+      <div>
+        <button onClick={() => navigate('/completed-tasks')}>Go to Completed Tasks</button>
+      </div>
     </div>
   );
 };
