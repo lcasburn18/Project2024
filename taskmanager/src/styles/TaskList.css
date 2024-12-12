@@ -116,3 +116,66 @@
     background-color: #27ae60;
   }
   
+  /* Styling for the Task List */
+.task-list-container {
+    padding: 20px;
+  }
+  
+  .task-list-title {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .no-tasks-placeholder {
+    font-size: 18px;
+    color: #888;
+    text-align: center;
+    margin-top: 20px;
+    font-style: italic;
+  }
+  
+  .task-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .task-item {
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f4f4f4;
+    border-radius: 5px;
+  }
+  
+  .task-info {
+    flex-grow: 1;
+  }
+  
+  .task-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .btn-complete, .btn-delete {
+    padding: 8px 12px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  .btn-complete {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .btn-delete {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .btn-complete:hover, .btn-delete:hover {
+    opacity: 0.8;
+  }
+  
