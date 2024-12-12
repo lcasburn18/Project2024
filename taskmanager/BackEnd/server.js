@@ -27,6 +27,7 @@ const taskSchema = new mongoose.Schema({
   description: { type: String, required: true },
   dueDate: { type: Date, required: true },
   completed: { type: Boolean, default: false },
+  completedAt: { type: Date },
 });
 
 const taskModel = mongoose.model('Task', taskSchema);
@@ -47,9 +48,17 @@ app.delete('/api/task/:id', async (req, res) => {
 });
 
 app.put('/api/task/:id', async (req, res) => {
-  const task = await taskModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
-  res.send(task);
+  const { completed } = req.body;  // Get the "completed" status from the request body
+  const completedAt = completed ? new Date() : null;  // Set completedAt if task is marked as completed
+  
+  const task = await taskModel.findByIdAndUpdate(
+    req.params.id,
+    { ...req.body, completedAt }, // Spread the incoming request body and include completedAt
+    { new: true }  // Return the updated task
+  );
+  res.send(task);  // Send back the updated task
 });
+
 
 app.post('/api/tasks', async (req, res) => {
   const { title, description, dueDate, completed } = req.body;
